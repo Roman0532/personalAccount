@@ -1,4 +1,4 @@
-{{ Form::open(['action' => 'PersonalAccountController@uploadDocuments']) }}
+{{ Form::open(['action' => 'PersonalAccountController@uploadData']) }}
 <select name="{{$selectName}}" class="{{$class}}">
     @foreach($values as $value)
         <option value='{{$value->id}}'>{{$value->title}}</option>

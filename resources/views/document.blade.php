@@ -110,14 +110,14 @@
                                 <tr>
                                     <td align="left"> @if(!empty($document->discipline->title))
                                             {{ $document->discipline->title }}
-                                            @include('forms.forms-delete',['document'=> $document,'field'=>'discipline_id']) @else
+                                            @include('forms.forms-delete',['method'=>'deleteData','document'=> $document,'field'=>'discipline_id']) @else
                                             @include('forms.forms-select',['class'=>'add_discipline','selectName'=>'discipline','document'=> $document,
                                              'submitName'=>'add_discipline', 'field'=>'discipline_id','values'=>$disciplines]) @endif
                                     </td>
 
                                     <td align="left"> @if(!empty($document->course->title))
                                             {{ $document->course->title }}
-                                            @include('forms.forms-delete',['document'=> $document,'field'=>'course_id']) @else
+                                            @include('forms.forms-delete',['method'=>'deleteData','document'=> $document,'field'=>'course_id']) @else
                                             @include('forms.forms-select',['class'=>'add_course',
                                             'selectName'=>'course','document'=> $document ,'submitName'=>'add_course',
                                              'field'=>'course_id','values'=>$courses]) @endif
@@ -127,7 +127,7 @@
                                                 href="{{Storage::url($document->theoretical_material)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
-                                        @include('forms.forms-delete',['document'=> $document,'field'=>'theoretical_material']) @else
+                                        @include('forms.forms-delete',['method'=>'deleteDocument','document'=> $document,'field'=>'theoretical_material']) @else
                                             @include('forms.forms-upload',['document'=> $document,'field'=>'theoretical_material']) @endif
                                     </td>
 
@@ -135,7 +135,7 @@
                                                 href="{{Storage::url($document->practical_material)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
-                                            @include('forms.forms-delete',['document'=> $document,'field'=>'practical_material']) @else
+                                            @include('forms.forms-delete',['method'=>'deleteDocument','document'=> $document,'field'=>'practical_material']) @else
                                             @include('forms.forms-upload',['document'=> $document,'field'=>'practical_material']) @endif
                                     </td>
 
@@ -143,7 +143,7 @@
                                                 href="{{Storage::url($document->semester_work)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
-                                            @include('forms.forms-delete',['document'=> $document,'field'=>'semester_work']) @else
+                                            @include('forms.forms-delete',['method'=>'deleteDocument','document'=> $document,'field'=>'semester_work']) @else
                                             @include('forms.forms-upload',['document'=> $document,'field'=>'semester_work']) @endif
                                     </td>
 
@@ -151,21 +151,21 @@
                                                 href="{{Storage::url($document->independent_work)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
-                                            @include('forms.forms-delete',['document'=> $document,'field'=>'independent_work']) @else
+                                            @include('forms.forms-delete',['method'=>'deleteDocument','document'=> $document,'field'=>'independent_work']) @else
                                             @include('forms.forms-upload',['document'=> $document,'field'=>'independent_work']) @endif
                                     </td>
 
                                     <td align="left"> @if($document->fos)<a href="{{Storage::url($document->fos)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
-                                            @include('forms.forms-delete',['document'=> $document,'field'=>'fos']) @else
+                                            @include('forms.forms-delete',['method'=>'deleteDocument','document'=> $document,'field'=>'fos']) @else
                                             @include('forms.forms-upload',['document'=> $document,'field'=>'fos']) @endif
                                     </td>
 
                                     <td align="left"> @if($document->other)<a href="{{Storage::url($document->other)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
-                                            @include('forms.forms-delete',['document'=> $document,'field'=>'other']) @else
+                                            @include('forms.forms-delete',['method'=>'deleteDocument','document'=> $document,'field'=>'other']) @else
                                             @include('forms.forms-upload',['document'=> $document,'field'=>'other']) @endif
                                     </td>
 

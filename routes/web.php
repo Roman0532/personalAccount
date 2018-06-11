@@ -41,9 +41,11 @@ Route::match(['post', 'get'], '/documents', function () {
 
 Route::match(['post', 'get'], '/materials', "PersonalAccountController@getAllTeachers");
 
-Route::match(['post', 'get'], '/doc', "PersonalAccountController@uploadDocuments");
+Route::match(['post', 'get'], '/uploadDocuments', "PersonalAccountController@uploadDocuments");
+Route::match(['post', 'get'], '/uploadData', "PersonalAccountController@uploadData");
 
-Route::match(['post', 'get'], '/delete', "PersonalAccountController@deleteDocument")->name('delete');
+Route::match(['post', 'get'], '/deleteDocument', "PersonalAccountController@deleteDocument")->name('delete');
+Route::match(['post', 'get'], '/deleteData', "PersonalAccountController@deleteData");
 
 Route::match(['post', 'get'], '/create', "PersonalAccountController@createDocuments");
 

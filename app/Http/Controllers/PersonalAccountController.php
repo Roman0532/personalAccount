@@ -6,18 +6,63 @@ use App\Repositories\CourseInterface;
 use App\Repositories\DisciplineInterface;
 use App\Repositories\DocumentInterface;
 use App\Repositories\TeacherInterface;
+use app\Services\DocumentsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class PersonalAccountController extends Controller
 {
-    public function getAllDocuments($page, DocumentInterface $documentRepository, CourseInterface $courseRepository, DisciplineInterface $disciplineRepository, TeacherInterface $teacherRepository)
+    /**
+     * @var DocumentInterface
+     */
+    private $documentRepository;
+    /**
+     * @var CourseInterface
+     */
+    private $courseRepository;
+    /**
+     * @var DisciplineInterface
+     */
+    private $disciplineRepository;
+    /**
+     * @var TeacherInterface
+     */
+    private $teacherRepository;
+    /**
+     * @var DocumentsService
+     */
+    private $documentsService;
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * PersonalAccountController constructor.
+     * @param Request $request
+     * @param DocumentInterface $documentRepository
+     * @param CourseInterface $courseRepository
+     * @param DisciplineInterface $disciplineRepository
+     * @param TeacherInterface $teacherRepository
+     * @param DocumentsService $documentsService
+     */
+    public function __construct(Request $request, DocumentInterface $documentRepository, CourseInterface $courseRepository,
+                                DisciplineInterface $disciplineRepository, TeacherInterface $teacherRepository,
+                                DocumentsService $documentsService)
     {
-        $teacher = $teacherRepository->findOneBy([['id', $page]]);
-        $disciplines = $disciplineRepository->findAllBy('teacher_id', $teacher->id);
-        $course = $courseRepository->findAll();
+        $this->documentRepository = $documentRepository;
+        $this->courseRepository = $courseRepository;
+        $this->disciplineRepository = $disciplineRepository;
+        $this->teacherRepository = $teacherRepository;
+        $this->documentsService = $documentsService;
+        $this->request = $request;
+    }
+
+    public function getAllDocuments($page)
+    {
+        $teacher = $this->teacherRepository->findOneBy([['id', $page]]);
+        $disciplines = $this->disciplineRepository->findAllBy('teacher_id', $teacher->id);
+        $course = $this->courseRepository->findAll();
         if ($disciplines->isEmpty()) {
             return 'Пожалуйста добавьте дисциплину';
         }
@@ -27,112 +72,108 @@ class PersonalAccountController extends Controller
         }
 
         if ($teacher) {
-            $documents = $documentRepository->findAllByOrderBy('teacher_id', $teacher->id, 'id', 'desc');
+            $documents = $this->documentRepository->findAllByOrderBy('teacher_id', $teacher->id, 'id', 'desc');
             return view('document')->with(['documents' => $documents, 'courses' => $course, 'disciplines' => $disciplines, 'page' => $page]);
         }
         return redirect()->to('/login');
     }
 
-    public function getAllTeachers(TeacherInterface $teacherRepository)
+    public function getAllTeachers()
     {
-        $teachers = $teacherRepository->findAllOrderBy('full_name');
+        $teachers = $this->teacherRepository->findAllOrderBy('full_name');
         return view('materials')->with(['teachers' => $teachers]);
     }
 
-    public function createDocuments(Request $request, DocumentInterface $documentRepository)
+    public function createDocuments()
     {
-        if ($request->input('create')) {
-            $documentRepository->create(['discipline_id' => null, 'course_id' => null,
+        if ($this->request->input('create')) {
+            $this->documentRepository->create(['discipline_id' => null, 'course_id' => null,
                 'theoretical_materials' => null, 'practical_materials' => null, 'teacher_id' => Auth::user()->id]);
         }
         return redirect()->back();
     }
 
-    public function deleteAllDocuments(Request $request, DocumentInterface $documentRepository)
+    public function deleteAllDocuments()
     {
-        if ($request->input('deleteAll')) {
-            $documentRepository->delete('id', (int)$request->input('id'));
+        if ($this->request->input('deleteAll')) {
+            $this->documentRepository->delete('id', (int)$this->request->input('id'));
         }
         return redirect()->back();
     }
 
-    public function deleteDocument(Request $request, DocumentInterface $documentRepository)
+    public function deleteDocument()
     {
-        if ($request->input('delete')) {
-            $column = $request->input('column_name');
-            if ($file = $documentRepository->findOneBy([['id', (int)$request->input('id')]])->$column) {
-                unlink('../public/' . Storage::url($file));
-            }
-            $documentRepository->update('id', (int)$request->input('id'), [$column => null]);
+        if ($this->request->input('delete')) {
+            $column = $this->request->input('column_name');
+            $this->documentRepository->update('id', (int)$this->request->input('id'), [$column => null]);
         }
         return redirect()->back();
     }
 
-    public function uploadDocuments(Request $request, DocumentInterface $documentRepository)
+    public function uploadDocuments()
     {
-        $this->validate($request, [
+        $this->validate($this->request, [
             'file' => 'max:20000',
         ]);
 
         try {
-            if ($request->input('add_discipline') != null) {
-                $documentRepository->update('id', (int)$request->input('id'),
-                    [$request->input('column_name') => (int)$request->input('discipline')]);
-            }
-
-            if ($request->input('add_course') != null) {
-                $documentRepository->update('id', (int)$request->input('id'),
-                    [$request->input('column_name') => (int)$request->input('course')]);
-            }
-
-            if ($request->file('file')) {
-                $filename = md5(time() . $request->file('file')) . '.' . $request->file('file')->guessExtension();
-                $request->file('file')->move('storage/', $filename);
-
-                $documentRepository->update('id', (int)$request->input('id'),
-                    [$request->input('column_name') => $filename]);
-            }
+            $this->documentsService->uploadDocument();
             return redirect()->back();
         } catch (\Exception $exception) {
             return redirect()->back()->with('danger', 'Формат документа не поддерживается');
         }
     }
 
-    public function showAdminPanel(TeacherInterface $teacherRepository, DisciplineInterface $disciplineRepository)
+    public function uploadData()
     {
-        $teachers = $teacherRepository->findAllOrderBy('full_name');
-        $disciplines = $disciplineRepository->findAllOrderBy('title');
+        $this->documentsService->uploadData();
+        return redirect()->back();
+    }
+
+    public function deleteData()
+    {
+        if ($this->request->input('delete')) {
+            $column = $this->request->input('column_name');
+            $this->documentRepository->update('id', (int)$this->request->input('id'), [$column => null]);
+        }
+        return redirect()->back();
+    }
+
+    public function showAdminPanel()
+    {
+        $teachers = $this->teacherRepository->findAllOrderBy('full_name');
+        $disciplines = $this->disciplineRepository->findAllOrderBy('title');
         return view('adminpanel')->with(['teachers' => $teachers, 'disciplines' => $disciplines]);
     }
 
-    public function deleteTeacher(Request $request, TeacherInterface $teacherRepository,
-                                  DisciplineInterface $disciplineRepository, DocumentInterface $documentRepository)
+    public function deleteTeacher()
     {
-        if ($request->input('deleteTeacher')) {
-            $disciplineRepository->delete('teacher_id', $request->input('teachers'));
-            $documentRepository->delete('teacher_id', $request->input('teachers'));
-            $teacherRepository->delete('id', $request->input('teachers'));
+        if ($this->request->input('deleteTeacher')) {
+            $this->disciplineRepository->delete('teacher_id', $this->request->input('teachers'));
+            $this->documentRepository->delete('teacher_id', $this->request->input('teachers'));
+            $this->teacherRepository->delete('id', $this->request->input('teachers'));
             return redirect()->back()->with('success', 'Пользователь был успешно удалён');
         }
         return redirect()->back();
     }
 
-    public function deleteDiscipline(Request $request, DisciplineInterface $disciplineRepository, DocumentInterface $documentRepository)
+    public function deleteDiscipline()
     {
-        if ($request->input('deleteDiscipline')) {
-            $documentRepository->delete('discipline_id', $request->input('discipline'));
-            $disciplineRepository->delete('id', $request->input('discipline'));
+        if ($this->request->input('deleteDiscipline')) {
+            $this->documentRepository->delete('discipline_id', $this->request->input('discipline'));
+            $this->disciplineRepository->delete('id', $this->request->input('discipline'));
             return redirect()->back()->with('success', 'Дисциплина была успешно удалена');
         }
         return redirect()->back();
     }
 
-    public function addDiscipline(Request $request, DisciplineInterface $disciplineRepository)
+    public function addDiscipline()
     {
-        if ($request->input('addDiscipline')) {
-            $this->validate($request, ['discipline' => 'required']);
-            $disciplineRepository->create(['title' => $request->input('discipline'),
-                'teacher_id' => $request->input('teachers')]);
+        $this->validate($this->request, ['discipline' => 'required']);
+
+        if ($this->request->input('addDiscipline')) {
+            $this->disciplineRepository->create(['title' => $this->request->input('discipline'),
+                'teacher_id' => $this->request->input('teachers')]);
             return redirect()->back()->with('success', 'Дисциплина была успешно добавлена');
         }
         return redirect()->back();

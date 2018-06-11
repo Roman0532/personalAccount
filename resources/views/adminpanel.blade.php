@@ -110,7 +110,9 @@
         @yield('left-sidebar')
         <div class="content">
             @foreach($errors->all() as $error)
-                {{$error}}
+                <div class="success">
+                    {{$error}}
+                </div>
             @endforeach
             @if(session()->has('success'))
                 <div class="success">
