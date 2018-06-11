@@ -109,7 +109,7 @@
                 <p><button onclick="parent.location='index.html'">Главная</button></p>
                 <p><button onclick="parent.location='news.html'">Объявления и информация</button></p>
                 <p><button onclick="parent.location='prezent.html'">Презентация кафедры</button></p>
-                <p><button onclick="parent.location='sotrudniki.html'">Сотрудники</button></p>
+                <p><button onclick="parent.location='sotrudniki.blade.php.html'">Сотрудники</button></p>
                 <p><button onclick="parent.location='document.html'">Учебная работа</button></p>
                 <p><button onclick="parent.location='praktika.html'">Практики обучающихся </button></p>
                 <p><button onclick="parent.location='nip.html'">Научная и издательская работа</button></p>

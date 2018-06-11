@@ -11,8 +11,9 @@ class AddNewTableTeachers extends Migration
         Schema::create('teachers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('full_name')->nullable();
-            $table->string('email')->nullable();
+            $table->string('name')->nullable();
             $table->string('password')->nullable();
+            $table->integer('isAdmin')->unsigned()->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

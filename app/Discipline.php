@@ -12,7 +12,8 @@ class Discipline extends Model
 
     protected $fillable = [
         'id',
-        'title'
+        'title',
+        'teacher_id'
     ];
 
     protected $hidden = [

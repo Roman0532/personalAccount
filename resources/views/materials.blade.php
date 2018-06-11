@@ -19,7 +19,7 @@
                     <tbody>
                     @foreach($teachers as $teacher)
                         <tr>
-                            <td align="left"><a href="/teacher/{{$teacher->email}}"><span
+                            <td align="left"><a href="/teacher/{{$teacher->id}}"><span
                                             style="color: rgb(24, 116, 205);"><span
                                                 style="text-decoration: underline;">{{$teacher->full_name}}</span></span></a>
                             </td>

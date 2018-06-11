@@ -10,9 +10,7 @@ class AddNewTableCourses extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('full_name')->nullable();
-            $table->string('login')->nullable();
-            $table->string('password')->nullable();
+            $table->string('title')->nullable();
             $table->timestamps();
         });
     }

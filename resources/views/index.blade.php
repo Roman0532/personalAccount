@@ -1,5 +1,6 @@
 @include('layouts.appmath')
 @yield('head')
+
 <body>
 <div class="obloko">
     <div class="main">

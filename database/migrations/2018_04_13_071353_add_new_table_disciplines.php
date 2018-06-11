@@ -16,7 +16,13 @@ class AddNewTableDisciplines extends Migration
         Schema::create('disciplines', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->nullable();
+            $table->integer('teacher_id')->unsigned()->nullable();
             $table->timestamps();
+
+        });
+
+        Schema::table('disciplines', function($table) {
+            $table->foreign('teacher_id')->references('id')->on('teachers');
         });
     }
 

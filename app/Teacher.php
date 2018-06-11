@@ -12,10 +12,9 @@ class Teacher extends Authenticatable
     protected $fillable = [
         'id',
         'full_name',
-        'login',
+        'name',
         'password',
-        'remember_token',
-        'email'
+        'remember_token'
     ];
 
     protected $hidden = [
