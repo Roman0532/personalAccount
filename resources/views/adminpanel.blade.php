@@ -41,7 +41,9 @@
     .success {
         padding-top: 20px;
         padding-bottom: 20px;
-        background-color: #2ab27b;
+        background-color: #636b6f;
+        color: #fff;
+        text-align: center;
     }
 
     .function {
@@ -143,10 +145,10 @@
             </div>
 
             <div style="display:none;" id="form1" class="form1">
-                {{ Form::open(['action' => 'AdminController@deleteTeacher']) }}
+                {{ Form::open(['action' => 'PersonalAccountController@deleteTeacher']) }}
                 {{ Form::token() }}
                 <select name="teachers" class="delete_teachers" id="select">
-                    @foreach($teachers as $teacher)
+                    @foreach($teachers->except(1) as $teacher)
                         <option value='{{$teacher->id}}'>{{$teacher->full_name}}</option>
                     @endforeach
                 </select>
@@ -155,27 +157,28 @@
             </div>
 
             <div style="display:none;" id="form2" class="form2">
-                {{ Form::open(['action' => 'AdminController@deleteDiscipline']) }}
+                {{ Form::open(['action' => 'PersonalAccountController@deleteDiscipline']) }}
                 {{ Form::token() }}
                 <select name="discipline" class="delete_discipline" id="select">
                     @foreach($disciplines as $discipline)
                         <option value='{{$discipline->id}}'>{{$discipline->title}}</option>
                     @endforeach
                 </select>
-                <input type="submit" class="btn" value="Удалить дисциплину">
+                <input type="submit" class="btn" name="deleteDiscipline" value="Удалить дисциплину">
                 {{ Form::close() }}
             </div>
 
             <div style="display:none;" id="form3" class="form3">
-                {{ Form::open(['action' => 'AdminController@addDiscipline']) }}
+                {{ Form::open(['action' => 'PersonalAccountController@addDiscipline']) }}
                 {{ Form::token() }}
-                <input type="text" name="discipline" style="padding:8px;width: 41%" placeholder="Введите название дисциплины">
+                <input type="text" name="discipline" style="padding:8px;width: 41%"
+                       placeholder="Введите название дисциплины">
                 <select name="teachers" class="teachers" id="select">
                     @foreach($teachers as $teacher)
                         <option value='{{$teacher->id}}'>{{$teacher->full_name}}</option>
                     @endforeach
                 </select> <br>
-                <input type="submit" class="btn" value="Добавить дисциплину">
+                <input type="submit" class="btn" name="addDiscipline" value="Добавить дисциплину">
                 {{ Form::close() }}
             </div>
 

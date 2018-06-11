@@ -2320,15 +2320,11 @@
 
                 <p>Индивидуальная учебная нагрузка ППС</p>
                 <table>
-
                     <tbody><tr>
                         <td align="center">Индивидуальная учебная нагрузка ППС 2016/2017</td>
                         <td align="center"><a href="assets/doc/IUCH2016-2017.xls"><img src="assets/img/dow.png"></a></td>
                     </tr>
                     </tbody></table><br>
-
             </div>
-
-
         </div>
 @yield('footer')

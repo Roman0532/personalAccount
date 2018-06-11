@@ -39,23 +39,25 @@ Route::match(['post', 'get'], '/documents', function () {
     return view('documents');
 });
 
-Route::match(['post', 'get'], '/materials', "AdminController@getAllTeachers");
+Route::match(['post', 'get'], '/materials', "PersonalAccountController@getAllTeachers");
 
-Route::match(['post', 'get'], '/doc', "AdminController@uploadDocuments");
+Route::match(['post', 'get'], '/doc', "PersonalAccountController@uploadDocuments");
 
-Route::match(['post', 'get'], '/delete', "AdminController@deleteDocument")->name('delete');
+Route::match(['post', 'get'], '/delete', "PersonalAccountController@deleteDocument")->name('delete');
 
-Route::match(['post', 'get'], '/create', "AdminController@createDocuments");
+Route::match(['post', 'get'], '/create', "PersonalAccountController@createDocuments");
 
-Route::match(['post', 'get'], '/deleteAll', "AdminController@deleteAllDocuments");
+Route::match(['post', 'get'], '/deleteAll', "PersonalAccountController@deleteAllDocuments");
 
-Route::get('/teacher/{page}', "AdminController@getAllDocuments");
+Route::get('/teacher/{page}', "PersonalAccountController@getAllDocuments");
 
 Route::middleware(['isAdmin'])->group(function () {
     Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
     Route::post('register', 'Auth\RegisterController@register');
-    Route::get('/adminpanel', "AdminController@showAdminPanel");
-    Route::post('/teacher/delete', "AdminController@deleteTeacher");
-    Route::post('/discipline/delete', "AdminController@deleteDiscipline");
-    Route::post('/discipline/add', "AdminController@addDiscipline");
+
+    Route::get('/adminpanel', "PersonalAccountController@showAdminPanel");
+
+    Route::match(['post', 'get'], '/delete/teacher', "PersonalAccountController@deleteTeacher");
+    Route::match(['post', 'get'], '/discipline/delete', "PersonalAccountController@deleteDiscipline");
+    Route::match(['post', 'get'], '/discipline/add', "PersonalAccountController@addDiscipline");
 });

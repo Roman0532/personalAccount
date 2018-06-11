@@ -1,392 +1,12 @@
 @include('layouts.appmath')
 @yield('head')
-
-<body>
-<!-- </div> -->
-<div class="obloko">
-    <div class="main">
-        @if(!\Illuminate\Support\Facades\Auth::check())
-            @yield('header')
-            @yield('slider')
-        @endif
-    </div>
-    <div class="site_content">
-        @yield('left-sidebar')
-        <div class="content" style="float: left;width: 79%;font-size: 12px;">
-            <font size="5" color="#1874CD">
-                {{--<center><b>Кабинеты преподавателей</b></center>--}}
-            </font><br>
-            <div class="posts_content">
-                <!--<span style="color: black;">Личные кабинеты преподавателей</span>-->
-                <table>
-                    <tbody>
-                    <tr>
-                        <th align="left">Дисциплина<span
-                                    style="color: rgb(24, 116, 205);"></span>
-                        </th>
-                        <th align="left">Курс<span
-                                    style="color: rgb(24, 116, 205);"></span>
-                        </th>
-                        <th align="left">Теоретичекие материалы<span
-                                    style="color: rgb(24, 116, 205);"></span>
-                        </th>
-
-                        <th align="left">Практические Материалы<span
-                                    style="color: rgb(24, 116, 205);"></span>
-                        </th>
-
-                        <th align="left">Семестровые работы<span
-                                    style="color: rgb(24, 116, 205);"></span>
-                        </th>
-
-                        <th align="left">Независимая работа<span
-                                    style="color: rgb(24, 116, 205);"></span>
-                        </th>
-
-                        <th align="left">Фос<span
-                                    style="color: rgb(24, 116, 205);"></span>
-                        </th>
-
-                        <th align="left">Другое<span
-                                    style="color: rgb(24, 116, 205);"></span>
-                        </th>
-                    </tr>
-
-                    @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->id === (int)$page)
-                        @if($documents->isNotEmpty())
-                            @foreach($documents as $document)
-                                <tr>
-                                    <td align="left"> @if(!empty($document->discipline->title))
-                                            {{ $document->discipline->title }}
-
-                                            {{ Form::open(array('action' => 'AdminController@deleteDocument','files' => true)) }}
-                                            {{ Form::token() }}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::submit('Удалить', ['name' => 'delete']) }}
-                                            {{ Form::hidden('column_name','discipline_id') }}
-                                            {{ Form::close() }}
-
-                                        @else
-
-                                            {{ Form::open(array('action' => 'AdminController@uploadDocuments')) }}
-                                            {{ Form::token() }}
-                                            <select name="discipline" class="add_discipline" id="discipline">
-                                                @foreach($disciplines as $discipline)
-                                                    <option value='{{$discipline->id}}'>{{$discipline->title}}</option>
-                                                @endforeach
-                                            </select>
-                                            {{ Form::submit('Добавить',['name'=>'add_discipline'])}}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::hidden('column_name','discipline_id') }}
-                                            {{ Form::close() }}
-                                        @endif
-                                    </td>
-
-                                    <td align="left"> @if(!empty($document->course->title))
-                                            {{ $document->course->title }}
-
-                                            {{ Form::open(array('action' => 'AdminController@deleteDocument','files' => true)) }}
-                                            {{ Form::token() }}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::submit('Удалить', ['name' => 'delete']) }}
-                                            {{ Form::hidden('column_name','course_id') }}
-                                            {{ Form::close() }}
-
-                                        @else
-                                            {{ Form::open(array('action' => 'AdminController@uploadDocuments')) }}
-                                            {{ Form::token() }}
-                                            <select name="course" class="add_course" id="course">
-                                                @foreach($courses as $course)
-                                                    <option value='{{$course->id}}'>{{$course->title}}</option>
-                                                @endforeach
-                                            </select>
-                                            {{ Form::submit('Добавить',['name'=>'add_course'])}}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::hidden('column_name','course_id') }}
-                                            {{ Form::close() }}
-                                        @endif
-                                    </td>
-
-                                    <td align="left"> @if($document->theoretical_material)<a
-                                                href="{{$document->theoretical_material}}"><img
-                                                    style="width: 45px;height: 45px;"
-                                                    src="{{asset('images/document.png')}}" alt=""></a>
-
-                                        {{ Form::open(array('action' => 'AdminController@deleteDocument','files' => true,'id' => 'form')) }}
-                                        {{ Form::token() }}
-                                        {{ Form::hidden('id', $document->id) }}
-                                        {{ Form::submit('Удалить', ['name' => 'delete']) }}
-                                        {{ Form::hidden('column_name','theoretical_material') }}
-                                        {{ Form::close() }}
-                                        @else
-                                            {{ Form::open(array('action' => 'AdminController@uploadDocuments','files' => true,'style'=>'width:55px')) }}
-                                            {{ Form::token() }}
-                                            <input style="display:none; z-index: -1;" class="inputfile inputfile-1"
-                                                   type="file" name="file"
-                                                   id="uploadbtn{{$document->id.'theoretical_material'}}">
-
-                                            <label style="cursor: pointer"
-                                                   for="uploadbtn{{$document->id.'theoretical_material'}}"
-                                                   class="uploadButton"><span>Загрузить документ&hellip;</span></label>
-                                            <br>
-                                            <br>
-                                            {{ Form::submit('Добавить')}}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::hidden('column_name','theoretical_material') }}
-                                            {{ Form::close() }}
-                                        @endif
-                                    </td>
-
-                                    <td align="left"> @if($document->practical_material)<a
-                                                href="{{$document->practical_material}}"><img
-                                                    style="width: 45px;height: 45px;"
-                                                    src="{{asset('images/document.png')}}" alt=""></a>
-
-                                        {{ Form::open(array('action' => 'AdminController@deleteDocument','files' => true,'id'=>'form1')) }}
-                                        {{ Form::token() }}
-                                        {{ Form::hidden('id', $document->id) }}
-                                        {{ Form::submit('Удалить', ['name' => 'delete']) }}
-                                        {{ Form::hidden('column_name','practical_material') }}
-                                        {{ Form::close() }}
-
-                                        @else
-                                            {{ Form::open(array('action' => 'AdminController@uploadDocuments','files' => true,'style'=>'width:55px')) }}
-                                            {{ Form::token() }}
-                                            <input style="display:none; z-index: -1;" class="inputfile inputfile-1"
-                                                   type="file" name="file"
-                                                   id="uploadbtn{{$document->id.'practical_material'}}">
-
-                                            <label style="cursor: pointer"
-                                                   for="uploadbtn{{$document->id.'practical_material'}}"
-                                                   class="uploadButton"><span>Загрузить документ&hellip;</span></label>
-                                            <br>
-                                            <br>
-                                            {{ Form::submit('Добавить')}}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::hidden('column_name','practical_material') }}
-                                            {{ Form::close() }}
-                                        @endif
-                                    </td>
-
-                                    <td align="left"> @if($document->semester_work)<a
-                                                href="{{$document->semester_work}}"><img
-                                                    style="width: 45px;height: 45px;"
-                                                    src="{{asset('images/document.png')}}" alt=""></a>
-
-                                        {{ Form::open(array('action' => 'AdminController@deleteDocument','files' => true)) }}
-                                        {{ Form::token() }}
-                                        {{ Form::hidden('id', $document->id) }}
-                                        {{ Form::submit('Удалить', ['name' => 'delete']) }}
-                                        {{ Form::hidden('column_name','semester_work') }}
-                                        {{ Form::close() }}
-
-                                        @else
-                                            {{ Form::open(array('action' => 'AdminController@uploadDocuments','files' => true,'style'=>'width:55px')) }}
-                                            {{ Form::token() }}
-                                            <input style="display:none; z-index: -1;" class="inputfile inputfile-1"
-                                                   type="file" name="file"
-                                                   id="uploadbtn{{$document->id.'semester_work'}}">
-                                            <label style="cursor: pointer"
-                                                   for="uploadbtn{{$document->id.'semester_work'}}"
-                                                   class="uploadButton"><span>Загрузить документ&hellip;</span></label>
-                                            <br>
-                                            <br>
-                                            {{ Form::submit('Добавить')}}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::hidden('column_name','semester_work') }}
-                                            {{ Form::close() }}
-                                        @endif
-                                    </td>
-
-                                    <td align="left"> @if($document->independent_work)<a
-                                                href="{{$document->independent_work}}"><img
-                                                    style="width: 45px;height: 45px;"
-                                                    src="{{asset('images/document.png')}}" alt=""></a>
-
-                                        {{ Form::open(array('action' => 'AdminController@deleteDocument','files' => true)) }}
-                                        {{ Form::token() }}
-                                        {{ Form::hidden('id', $document->id) }}
-                                        {{ Form::submit('Удалить', ['name' => 'delete']) }}
-                                        {{ Form::hidden('column_name','independent_work') }}
-                                        {{ Form::close() }}
-
-                                        @else
-                                            {{ Form::open(array('action' => 'AdminController@uploadDocuments','files' => true,'style'=>'width:55px')) }}
-                                            {{ Form::token() }}
-                                            <input style="display:none; z-index: -1;" class="inputfile inputfile-1"
-                                                   type="file" name="file"
-                                                   id="uploadbtn{{$document->id.'independent_work'}}">
-                                            <label style="cursor: pointer"
-                                                   for="uploadbtn{{$document->id.'independent_work'}}"
-                                                   class="uploadButton"><span>Загрузить документ&hellip;</span></label>
-                                            <br>
-                                            <br>
-                                            {{ Form::submit('Добавить')}}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::hidden('column_name','independent_work') }}
-                                            {{ Form::close() }}
-                                        @endif
-                                    </td>
-
-                                    <td align="left"> @if($document->fos)<a
-                                                href="{{$document->fos}}"><img
-                                                    style="width: 45px;height: 45px;"
-                                                    src="{{asset('images/document.png')}}" alt=""></a>
-
-                                        {{ Form::open(array('action' => 'AdminController@deleteDocument','files' => true)) }}
-                                        {{ Form::token() }}
-                                        {{ Form::hidden('id', $document->id) }}
-                                        {{ Form::submit('Удалить', ['name' => 'delete']) }}
-                                        {{ Form::hidden('column_name','fos') }}
-                                        {{ Form::close() }}
-
-                                        @else
-                                            {{ Form::open(array('action' => 'AdminController@uploadDocuments','files' => true,'style'=>'width:55px')) }}
-                                            {{ Form::token() }}
-                                            <input style="display:none; z-index: -1;" class="inputfile inputfile-1"
-                                                   type="file" name="file"
-                                                   id="uploadbtn{{$document->id.'fos'}}">
-                                            <label style="cursor: pointer"
-                                                   for="uploadbtn{{$document->id.'fos'}}"
-                                                   class="uploadButton"><span>Загрузить документ&hellip;</span></label>
-                                            <br>
-                                            <br>
-                                            {{ Form::submit('Добавить')}}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::hidden('column_name','fos') }}
-                                            {{ Form::close() }}
-                                        @endif
-                                    </td>
-
-                                    <td align="left"> @if($document->other)<a
-                                                href="{{$document->other}}"><img
-                                                    style="width: 45px;height: 45px;"
-                                                    src="{{asset('images/document.png')}}" alt=""></a>
-
-                                        {{ Form::open(array('action' => 'AdminController@deleteDocument','files' => true)) }}
-                                        {{ Form::token() }}
-                                        {{ Form::hidden('id', $document->id) }}
-                                        {{ Form::submit('Удалить', ['name' => 'delete']) }}
-                                        {{ Form::hidden('column_name','other') }}
-                                        {{ Form::close() }}
-
-                                        @else
-                                            {{ Form::open(array('action' => 'AdminController@uploadDocuments','files' => true,'style'=>'width:55px')) }}
-                                            {{ Form::token() }}
-                                            <input style="display:none; z-index: -1;" class="inputfile inputfile-1"
-                                                   type="file" name="file"
-                                                   id="uploadbtn{{$document->id.'other'}}">
-                                            <label style="cursor: pointer"
-                                                   for="uploadbtn{{$document->id.'other'}}"
-                                                   class="uploadButton"><span>Загрузить документ&hellip;</span></label>
-                                            <br>
-                                            <br>
-                                            {{ Form::submit('Добавить')}}
-                                            {{ Form::hidden('id', $document->id) }}
-                                            {{ Form::hidden('column_name','other') }}
-                                            {{ Form::close() }}
-                                        @endif
-                                    </td>
-
-                                    <td align="left">
-                                        {{ Form::open(array('action' => 'AdminController@deleteAllDocuments')) }}
-                                        {{ Form::token() }}
-                                        <label for="deleteBtn{{$document->id}}" id="labelDeleteBtn"><img
-                                                    style="width:20px;height: 20px"
-                                                    src="{{asset('images/cross.png')}}"
-                                                    alt=""></label>
-                                        <br>
-                                        <input type="submit" name="deleteAll" id="deleteBtn{{$document->id}}"
-                                               value="Удалить дисциплину"
-                                               style="opacity: 0;width: 10px;">
-                                        {{ Form::hidden('id', $document->id) }}
-                                        {{ Form::close() }}
-                                    </td>
-
-                                    @endforeach
-                                </tr>
-
-                                @endif
-                                <!-- Нет документа-->
-                                {{ Form::open(array('action' => 'AdminController@createDocuments')) }}
-                                {{ Form::token() }}
-                                {{ Form::submit('Создать', ['name' => 'create']) }}
-                                {{ Form::close() }}
-
-                                <br>
-                                @else
-                                    @if($documents->isNotEmpty())
-                                        @foreach($documents as $document)
-                                            <tr>
-                                                <td> @if(!empty($document->discipline->title))
-                                                        {{ $document->discipline->title }}
-                                                    @endif
-                                                </td>
-
-                                                <td> @if(!empty($document->course->title)){{$document->course->title}}
-                                                    @endif
-                                                </td>
-
-                                                <td> @if($document->theoretical_material)<a
-                                                            href="{{$document->theoretical_material}}"><img
-                                                                style="width: 45px;height: 45px;"
-                                                                src="{{asset('images/document.png')}}" alt=""></a>
-                                                    @endif
-                                                </td>
-
-                                                <td> @if($document->practical_material)<a
-                                                            href="{{$document->practical_material}}"><img
-                                                                style="width: 45px;height: 45px;"
-                                                                src="{{asset('images/document.png')}}" alt=""></a>
-                                                    @endif
-                                                </td>
-
-                                                <td> @if($document->semester_work)<a
-                                                            href="{{$document->semester_work}}"><img
-                                                                style="width: 45px;height: 45px;"
-                                                                src="{{asset('images/document.png')}}" alt=""></a>
-                                                    @endif
-                                                </td>
-
-                                                <td> @if($document->independent_work)<a
-                                                            href="{{$document->independent_work}}"><img
-                                                                style="width: 45px;height: 45px;"
-                                                                src="{{asset('images/document.png')}}" alt=""></a>
-                                                    @endif
-                                                </td>
-
-                                                <td> @if($document->fos)<a
-                                                            href="{{$document->fos}}"><img
-                                                                style="width: 45px;height: 45px;"
-                                                                src="{{asset('images/document.png')}}" alt=""></a>
-                                                    @endif
-                                                </td>
-
-                                                <td> @if($document->other)<a
-                                                            href="{{$document->other}}"><img
-                                                                style="width: 45px;height: 45px;"
-                                                                src="{{asset('images/document.png')}}" alt=""></a>
-                                                    @endif
-                                                </td>
-                                                @endforeach
-                                            </tr>
-                                            @endif
-                                            @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-@yield('footer')
-
 <style>
     .posts_content img {
         width: 180px;
         height: 220px;
         float: left;
         margin: 0 7px 9px 0;
-        border: outset 3px solid #000000;
+        border: outset 3px solid #000;
         border-radius: 5px;
     }
 
@@ -444,18 +64,163 @@
         float: none
     }
 
-</style>
-<script type="text/javascript" src="{{ url('js/custom-file-input.js') }}"></script>
+    .danger {
+        padding: 20px;
+        background-color: red;
+        color: #fff;
+    }
 
-{{--<script type="text/javascript">--}}
-{{--var sel = document.getElementById("discipline"); // Получаем наш список--}}
-{{--var distance = sel.options[sel.selectedIndex].text;--}}
-{{--$.ajax({--}}
-{{--type: 'get',              // Задаем метод передачи--}}
-{{--url: '/doc', // URL для передачи параметра--}}
-{{--data: {distance:distance},--}}
-{{--success: function(data) {--}}
-{{--alert(data)--}}
-{{--}--}}
-{{--});--}}
-{{--</script>--}}
+</style>
+<body>
+<!-- </div> -->
+<div class="obloko">
+    <div class="main">
+        @if(!auth()->check())
+            @yield('header')
+            @yield('slider')
+        @endif
+    </div>
+    <div class="site_content">
+        @yield('left-sidebar')
+        <div class="content" style="float: left;width: 79%;font-size: 12px;">
+            <font size="5" color="#1874CD">
+            </font><br>
+            <div class="posts_content">
+                <table>
+                    <tbody>
+                    <tr>
+                        <th align="left">Дисциплина<span style="color: rgb(24, 116, 205);"></span></th>
+                        <th align="left">Курс<span style="color: rgb(24, 116, 205);"></span></th>
+                        <th align="left">Теоретичекие материалы<span style="color: rgb(24, 116, 205);"></span></th>
+                        <th align="left">Практические Материалы<span style="color: rgb(24, 116, 205);"></span></th>
+                        <th align="left">Семестровые работы<span style="color: rgb(24, 116, 205);"></span></th>
+                        <th align="left">Независимая работа<span style="color: rgb(24, 116, 205);"></span></th>
+                        <th align="left">Фос<span style="color: rgb(24, 116, 205);"></span></th>
+                        <th align="left">Другое<span style="color: rgb(24, 116, 205);"></span></th>
+                    </tr>
+                    @if(session()->has('danger'))
+                        <div class="danger">
+                            {{session()->get('danger')}}
+                        </div>
+                    @endif
+
+                    @if(auth()->check() && auth()->user()->id === (int)$page)
+                        @if($documents->isNotEmpty())
+                            @foreach($documents as $document)
+                                <tr>
+                                    <td align="left"> @if(!empty($document->discipline->title))
+                                            {{ $document->discipline->title }}
+                                            @include('forms.forms-delete',['document'=> $document,'field'=>'discipline_id']) @else
+                                            @include('forms.forms-select',['class'=>'add_discipline','selectName'=>'discipline','document'=> $document,
+                                             'submitName'=>'add_discipline', 'field'=>'discipline_id','values'=>$disciplines]) @endif
+                                    </td>
+
+                                    <td align="left"> @if(!empty($document->course->title))
+                                            {{ $document->course->title }}
+                                            @include('forms.forms-delete',['document'=> $document,'field'=>'course_id']) @else
+                                            @include('forms.forms-select',['class'=>'add_course',
+                                            'selectName'=>'course','document'=> $document ,'submitName'=>'add_course',
+                                             'field'=>'course_id','values'=>$courses]) @endif
+                                    </td>
+
+                                    <td align="left"> @if($document->theoretical_material)<a
+                                                href="{{$document->theoretical_material}}">
+                                            <img style="width: 45px;height: 45px;"
+                                                 src="{{asset('images/document.png')}}" alt=""></a>
+                                        @include('forms.forms-delete',['document'=> $document,'field'=>'theoretical_material']) @else
+                                            @include('forms.forms-upload',['document'=> $document,'field'=>'theoretical_material']) @endif
+                                    </td>
+
+                                    <td align="left"> @if($document->practical_material)<a
+                                                href="{{$document->practical_material}}">
+                                            <img style="width: 45px;height: 45px;"
+                                                 src="{{asset('images/document.png')}}" alt=""></a>
+                                            @include('forms.forms-delete',['document'=> $document,'field'=>'practical_material']) @else
+                                            @include('forms.forms-upload',['document'=> $document,'field'=>'practical_material']) @endif
+                                    </td>
+
+                                    <td align="left"> @if($document->semester_work)<a
+                                                href="{{$document->semester_work}}">
+                                            <img style="width: 45px;height: 45px;"
+                                                 src="{{asset('images/document.png')}}" alt=""></a>
+                                            @include('forms.forms-delete',['document'=> $document,'field'=>'semester_work']) @else
+                                            @include('forms.forms-upload',['document'=> $document,'field'=>'semester_work']) @endif
+                                    </td>
+
+                                    <td align="left"> @if($document->independent_work)<a
+                                                href="{{$document->independent_work}}">
+                                            <img style="width: 45px;height: 45px;"
+                                                 src="{{asset('images/document.png')}}" alt=""></a>
+                                            @include('forms.forms-delete',['document'=> $document,'field'=>'independent_work']) @else
+                                            @include('forms.forms-upload',['document'=> $document,'field'=>'independent_work']) @endif
+                                    </td>
+
+                                    <td align="left"> @if($document->fos)<a href="{{$document->fos}}">
+                                            <img style="width: 45px;height: 45px;"
+                                                 src="{{asset('images/document.png')}}" alt=""></a>
+                                            @include('forms.forms-delete',['document'=> $document,'field'=>'fos']) @else
+                                            @include('forms.forms-upload',['document'=> $document,'field'=>'fos']) @endif
+                                    </td>
+
+                                    <td align="left"> @if($document->other)<a href="{{$document->other}}">
+                                            <img style="width: 45px;height: 45px;"
+                                                 src="{{asset('images/document.png')}}" alt=""></a>
+                                            @include('forms.forms-delete',['document'=> $document,'field'=>'other']) @else
+                                            @include('forms.forms-upload',['document'=> $document,'field'=>'other']) @endif
+                                    </td>
+
+                                    <td align="left">
+                                        {{ Form::open(['action' => 'PersonalAccountController@deleteAllDocuments']) }}
+                                        <label for="deleteBtn{{$document->id}}" id="labelDeleteBtn">
+                                            <img style="width:20px;height: 20px" src="{{asset('images/cross.png')}}"
+                                                 alt=""></label> <br>
+                                        <input type="submit" name="deleteAll" id="deleteBtn{{$document->id}}"
+                                               value="Удалить дисциплину" style="opacity: 0;width: 10px;">
+                                        {{ Form::hidden('id', $document->id) }}
+                                        {{ Form::close() }}
+                                    </td>
+
+                                    @endforeach
+                                </tr>
+
+                                @endif
+                                <!-- Нет документа-->
+                                {{ Form::open(['action' => 'PersonalAccountController@createDocuments']) }}
+                                {{ Form::submit('Создать', ['name' => 'create']) }}
+                                {{ Form::close() }}
+
+                                <br>
+                                @else
+                                    @if($documents->isNotEmpty())
+                                        @foreach($documents as $document)
+                                            @if(!empty($document->discipline->title) || !empty($document->course->title)
+                                             || !empty($document->theoretical_material) && !empty($document->practical_material) || !empty($document->semester_work)
+                                              || !empty($document->independent_work) || !empty($document->fos) || !empty($document->other))
+                                                <tr>
+                                                    <td> @if(!empty($document->discipline->title))
+                                                            {{ $document->discipline->title }}
+                                                        @endif
+                                                    </td>
+
+                                                    <td> @if(!empty($document->course->title)){{$document->course->title}}
+                                                        @endif
+                                                    </td>
+                                                    @include('tableForStudent',['field' => 'theoretical_material'])
+                                                    @include('tableForStudent',['field' => 'practical_material'])
+                                                    @include('tableForStudent',['field' => 'semester_work'])
+                                                    @include('tableForStudent',['field' => 'independent_work'])
+                                                    @include('tableForStudent',['field' => 'fos'])
+                                                    @include('tableForStudent',['field' => 'other'])
+                                                    @endif
+                                                    @endforeach
+                                                </tr>
+                                            @endif
+                                            @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@yield('footer')
+<script type="text/javascript" src="{{ url('js/custom-file-input.js') }}"></script>

@@ -47,6 +47,10 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
 
+        if (Teacher::where('name', $request->input('name'))->first()) {
+            return redirect()->back()->with('success', 'Пользователь с таким логином уже существует');
+        }
+
         event(new Registered($user = $this->create($request->all())));
 
         return redirect()->back()->with('success', 'Пользователь был успешно добавлен');

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Главная страница</title>
     <meta name="description" content="Кафедра прикладной математики">
@@ -38,39 +39,39 @@
 
 @section('header')
     <div class="header">
-        <div class="logo"><a href="/index.html">
+        <div class="logo"><a href="/index">
             </a>
             <div class="gerb">
-                <a href="/index.html"> <img src="{{asset('images/logo.png')}}">
+                <a href="/index"> <img src="{{asset('images/logo.png')}}">
                 </a></div>
-            <a href="/index.html"> </a>
+            <a href="/index"> </a>
             <div class="logo_text">
-                <a href="/index.html"> </a>
+                <a href="/index"> </a>
                 <h1>
                     <m>
-                        <w><a href="/index.html">KЕМЕРОВСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ</a></w>
+                        <w><a href="/index">KЕМЕРОВСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ</a></w>
                     </m>
                 </h1>
-                <a href="/index.html"> </a>
+                <a href="/index"> </a>
                 <h2>
-                    <w><a href="/index.html">К</a></w>
-                    <a href="/index.html">АФЕДРА
+                    <w><a href="/index">К</a></w>
+                    <a href="/index">АФЕДРА
                         <w>П</w>
                         РИКЛАДНОЙ
-                        <w>М</w>
+                        <w> М</w>
                         АТЕМАТИКИ</a></h2>
             </div>
             <div class="dante">
                 <h1>(3842)
                     <w> 58-37-43</w>
                 </h1>
-                <h2>E-MAIL:<a href="/instruction.html">
+                <h2>E-MAIL:<a href="/instruction">
                         <w> applmath@kemsu.ru</w>
                     </a></h2>
-                @if(\Illuminate\Support\Facades\Auth::check())
+                @if(auth()->check())
                     {{'Добро пожаловать'}}
                     <br>
-                    {{\Illuminate\Support\Facades\Auth::user()->full_name}}
+                    {{auth()->user()->full_name}}
                     <br>
                     <a href="/logout">Выйти</a>
                 @else
@@ -99,6 +100,11 @@
             <p>
                 <button onclick="parent.location = '/index'">Главная</button>
             </p>
+            @if(auth()->check() && auth()->user()->isAdmin)
+                <p>
+                    <button onclick="parent.location='/adminpanel'">Панель администратора</button>
+                </p>
+            @endif
             <p>
                 <button onclick="parent.location='/news'">Объявления и информация</button>
             </p>
@@ -139,6 +145,7 @@
             <p>
                 <button onclick="parent.location='/foto'">Фотогалерея</button>
             </p>
+
 
         </div>
         <div class="menu2">
