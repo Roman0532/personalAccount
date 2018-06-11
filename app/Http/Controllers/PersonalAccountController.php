@@ -101,12 +101,18 @@ class PersonalAccountController extends Controller
         return redirect()->back();
     }
 
-    public function deleteDocument()
+    public function deleteData()
     {
         if ($this->request->input('delete')) {
             $column = $this->request->input('column_name');
             $this->documentRepository->update('id', (int)$this->request->input('id'), [$column => null]);
         }
+        return redirect()->back();
+    }
+
+    public function deleteDocument()
+    {
+        $this->documentsService->deleteDocument($this->request, $this->documentRepository);
         return redirect()->back();
     }
 
@@ -117,7 +123,7 @@ class PersonalAccountController extends Controller
         ]);
 
         try {
-            $this->documentsService->uploadDocument();
+            $this->documentsService->uploadDocument($this->request, $this->documentRepository);
             return redirect()->back();
         } catch (\Exception $exception) {
             return redirect()->back()->with('danger', 'Формат документа не поддерживается');
@@ -126,16 +132,7 @@ class PersonalAccountController extends Controller
 
     public function uploadData()
     {
-        $this->documentsService->uploadData();
-        return redirect()->back();
-    }
-
-    public function deleteData()
-    {
-        if ($this->request->input('delete')) {
-            $column = $this->request->input('column_name');
-            $this->documentRepository->update('id', (int)$this->request->input('id'), [$column => null]);
-        }
+        $this->documentsService->uploadData($this->request, $this->documentRepository);
         return redirect()->back();
     }
 
@@ -179,5 +176,4 @@ class PersonalAccountController extends Controller
         return redirect()->back();
     }
 }
-
 

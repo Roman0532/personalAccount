@@ -8,58 +8,51 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentsService
 {
-    /**
-     * @var Request
-     */
-    private $request;
-    /**
-     * @var DocumentInterface
-     */
-    private $documentRepository;
 
     /**
-     * DocumentsService constructor.
      * @param Request $request
      * @param DocumentInterface $documentRepository
      */
-    public function __construct(Request $request, DocumentInterface $documentRepository)
+    public function deleteDocument($request, $documentRepository)
     {
-        $this->request = $request;
-        $this->documentRepository = $documentRepository;
-    }
-    
-    public function deleteDocument()
-    {
-        if ($this->request->input('delete')) {
-            $column = $this->request->input('column_name');
-            if ($file = $this->documentRepository->findOneBy([['id', (int)$this->request->input('id')]])->$column) {
+        if ($request->input('delete')) {
+            $column = $request->input('column_name');
+            if ($file = $documentRepository->findOneBy([['id', (int)$request->input('id')]])->$column) {
                 unlink('../public/' . Storage::url($file));
             }
-            $this->documentRepository->update('id', (int)$this->request->input('id'), [$column => null]);
+            $documentRepository->update('id', (int)$request->input('id'), [$column => null]);
         }
     }
 
-    public function uploadData()
+    /**
+     * @param Request $request
+     * @param DocumentInterface $documentRepository
+     */
+    public function uploadData($request, $documentRepository)
     {
-        if ($this->request->input('add_discipline') != null) {
-            $this->documentRepository->update('id', (int)$this->request->input('id'),
-                [$this->request->input('column_name') => (int)$this->request->input('discipline')]);
+        if ($request->input('add_discipline') != null) {
+            $documentRepository->update('id', (int)$request->input('id'),
+                [$request->input('column_name') => (int)$request->input('discipline')]);
         }
 
-        if ($this->request->input('add_course') != null) {
-            $this->documentRepository->update('id', (int)$this->request->input('id'),
-                [$this->request->input('column_name') => (int)$this->request->input('course')]);
+        if ($request->input('add_course') != null) {
+            $documentRepository->update('id', (int)$request->input('id'),
+                [$request->input('column_name') => (int)$request->input('course')]);
         }
     }
 
-    public function uploadDocument()
+    /**
+     * @param Request $request
+     * @param DocumentInterface $documentRepository
+     */
+    public function uploadDocument($request, $documentRepository)
     {
-        if ($this->request->file('file')) {
-            $filename = md5(time() . $this->request->file('file')) . '.' . $this->request->file('file')->guessExtension();
-            $this->request->file('file')->move('storage/', $filename);
+        if ($request->file('file')) {
+            $filename = md5(time() . $request->file('file')) . '.' . $request->file('file')->guessExtension();
+            $request->file('file')->move('storage/', $filename);
 
-            $this->documentRepository->update('id', (int)$this->request->input('id'),
-                [$this->request->input('column_name') => $filename]);
+            $documentRepository->update('id', (int)$request->input('id'),
+                [$request->input('column_name') => $filename]);
         }
     }
 }
