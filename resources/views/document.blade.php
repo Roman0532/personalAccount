@@ -124,7 +124,7 @@
                                     </td>
 
                                     <td align="left"> @if($document->theoretical_material)<a
-                                                href="{{$document->theoretical_material}}">
+                                                href="{{Storage::url($document->theoretical_material)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
                                         @include('forms.forms-delete',['document'=> $document,'field'=>'theoretical_material']) @else
@@ -132,7 +132,7 @@
                                     </td>
 
                                     <td align="left"> @if($document->practical_material)<a
-                                                href="{{$document->practical_material}}">
+                                                href="{{Storage::url($document->practical_material)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
                                             @include('forms.forms-delete',['document'=> $document,'field'=>'practical_material']) @else
@@ -140,7 +140,7 @@
                                     </td>
 
                                     <td align="left"> @if($document->semester_work)<a
-                                                href="{{$document->semester_work}}">
+                                                href="{{Storage::url($document->semester_work)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
                                             @include('forms.forms-delete',['document'=> $document,'field'=>'semester_work']) @else
@@ -148,21 +148,21 @@
                                     </td>
 
                                     <td align="left"> @if($document->independent_work)<a
-                                                href="{{$document->independent_work}}">
+                                                href="{{Storage::url($document->independent_work)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
                                             @include('forms.forms-delete',['document'=> $document,'field'=>'independent_work']) @else
                                             @include('forms.forms-upload',['document'=> $document,'field'=>'independent_work']) @endif
                                     </td>
 
-                                    <td align="left"> @if($document->fos)<a href="{{$document->fos}}">
+                                    <td align="left"> @if($document->fos)<a href="{{Storage::url($document->fos)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
                                             @include('forms.forms-delete',['document'=> $document,'field'=>'fos']) @else
                                             @include('forms.forms-upload',['document'=> $document,'field'=>'fos']) @endif
                                     </td>
 
-                                    <td align="left"> @if($document->other)<a href="{{$document->other}}">
+                                    <td align="left"> @if($document->other)<a href="{{Storage::url($document->other)}}">
                                             <img style="width: 45px;height: 45px;"
                                                  src="{{asset('images/document.png')}}" alt=""></a>
                                             @include('forms.forms-delete',['document'=> $document,'field'=>'other']) @else

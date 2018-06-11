@@ -61,7 +61,7 @@ class PersonalAccountController extends Controller
         if ($request->input('delete')) {
             $column = $request->input('column_name');
             if ($file = $documentRepository->findOneBy([['id', (int)$request->input('id')]])->$column) {
-                unlink('../public/' . $file);
+                unlink('../public/' . Storage::url($file));
             }
             $documentRepository->update('id', (int)$request->input('id'), [$column => null]);
         }
@@ -90,7 +90,7 @@ class PersonalAccountController extends Controller
                 $request->file('file')->move('storage/', $filename);
 
                 $documentRepository->update('id', (int)$request->input('id'),
-                    [$request->input('column_name') => Storage::url($filename)]);
+                    [$request->input('column_name') => $filename]);
             }
             return redirect()->back();
         } catch (\Exception $exception) {
